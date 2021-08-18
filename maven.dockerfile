@@ -34,7 +34,8 @@ ENV AGENT_WORKDIR=${AGENT_WORKDIR} \
     MAVEN_CONFIG=${AGENT_WORKDIR}
 
 RUN mkdir /home/${user}/.jenkins \
- && mkdir -p ${MAVEN_CONFIG}
+ && mkdir -p ${MAVEN_CONFIG} \
+ && chown -R jenkins:jenkins ${MAVEN_CONFIG}
 
 VOLUME /home/${user}/.jenkins
 VOLUME ${AGENT_WORKDIR}
