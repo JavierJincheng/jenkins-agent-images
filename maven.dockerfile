@@ -26,16 +26,16 @@ RUN echo -e https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.12/main/ > /etc/apk/r
   && chmod 644 /usr/share/jenkins/agent.jar \
   && ln -sf /usr/share/jenkins/agent.jar /usr/share/jenkins/slave.jar \
   && apk del curl \
-  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn  
+  && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn  \
+  && mkdir -p ${MAVEN_CONFIG} \
+  && chown -R jenkins:jenkins ${MAVEN_CONFIG}
 
 USER ${user}
 ENV AGENT_WORKDIR=${AGENT_WORKDIR} \
     MAVEN_HOME=/usr/share/maven \
-    MAVEN_CONFIG=${AGENT_WORKDIR}
+    MAVEN_CONFIG=${MAVEN_CONFIG}
 
-RUN mkdir /home/${user}/.jenkins \
- && mkdir -p ${MAVEN_CONFIG} \
- && chown -R jenkins:jenkins ${MAVEN_CONFIG}
+RUN mkdir /home/${user}/.jenkins
 
 VOLUME /home/${user}/.jenkins
 VOLUME ${AGENT_WORKDIR}
