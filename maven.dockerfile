@@ -14,6 +14,8 @@ RUN addgroup -g ${gid} ${group} \
 LABEL Description="This is a base image with maven tool, which provides the Jenkins agent executable (slave.jar) and mvn cmd" Vendor="Javier" Version="${VERSION}"
 
 ARG AGENT_WORKDIR=/home/${user}/agent
+ARG MAVEN_CONFIG=/home/${user}/.m2
+
 COPY --from=MAVEN --chown=jenkins:jenkins /usr/share/maven /usr/share/maven
 
 RUN echo -e https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.12/main/ > /etc/apk/repositories \
@@ -29,11 +31,12 @@ RUN echo -e https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.12/main/ > /etc/apk/r
 USER ${user}
 ENV AGENT_WORKDIR=${AGENT_WORKDIR} \
     MAVEN_HOME=/usr/share/maven \
-    MAVEN_CONFIG=/home/${user}/.m2
+    MAVEN_CONFIG=${AGENT_WORKDIR}
 
 RUN mkdir /home/${user}/.jenkins \
- && mkdir -p ${AGENT_WORKDIR}
+ && mkdir -p ${MAVEN_CONFIG}
 
 VOLUME /home/${user}/.jenkins
 VOLUME ${AGENT_WORKDIR}
+VOLUME ${MAVEN_CONFIG}
 WORKDIR /home/${user}
