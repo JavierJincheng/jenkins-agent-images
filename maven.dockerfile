@@ -20,7 +20,7 @@ COPY --from=MAVEN --chown=jenkins:jenkins /usr/share/maven /usr/share/maven
 
 RUN echo -e https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.12/main/ > /etc/apk/repositories \
   && echo -e https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.12/community/ >> /etc/apk/repositories \ 
-  && apk add --update --no-cache curl bash git git-lfs openssh-client openssl procps \
+  && apk add --update --no-cache docker-cli curl bash git git-lfs openssh-client openssl procps \
   && curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar https://repo.jenkins-ci.org/public/org/jenkins-ci/main/remoting/${VERSION}/remoting-${VERSION}.jar \
   && chmod 755 /usr/share/jenkins \
   && chmod 644 /usr/share/jenkins/agent.jar \
@@ -37,7 +37,5 @@ ENV AGENT_WORKDIR=${AGENT_WORKDIR} \
 
 RUN mkdir /home/${user}/.jenkins
 
-VOLUME /home/${user}/.jenkins
-VOLUME ${AGENT_WORKDIR}
 VOLUME ${MAVEN_CONFIG}
 WORKDIR /home/${user}
