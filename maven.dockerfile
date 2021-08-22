@@ -8,9 +8,14 @@ ARG user=jenkins
 ARG group=jenkins
 ARG uid=1000
 ARG gid=1000
+ARG docker_group=docker
+ARG docker_gid=992
 
 RUN addgroup -g ${gid} ${group} \
- && adduser -h /home/${user} -u ${uid} -G ${group} -D ${user}
+ && adduser -h /home/${user} -u ${uid} -G ${group} -D ${user} \
+ && addgroup -g ${docker_gid} ${docker_group} \
+ && addgroup ${user} ${docker_group}
+
 LABEL Description="This is a base image with maven tool, which provides the Jenkins agent executable (slave.jar) and mvn cmd" Vendor="Javier" Version="${VERSION}"
 
 ARG AGENT_WORKDIR=/home/${user}/agent
