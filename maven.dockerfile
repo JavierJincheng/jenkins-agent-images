@@ -15,6 +15,7 @@ RUN addgroup -g ${gid} ${group} \
  && adduser -h /home/${user} -u ${uid} -G ${group} -D ${user} \
  && addgroup -g ${docker_gid} ${docker_group} \
  && addgroup ${user} ${docker_group}
+#gives jenkins user permissions to access /var/run/docker.sock
 
 LABEL Description="This is a base image with maven tool, which provides the Jenkins agent executable (slave.jar) and mvn cmd" Vendor="Javier" Version="${VERSION}"
 
@@ -33,7 +34,11 @@ RUN echo -e https://mirrors.tuna.tsinghua.edu.cn/alpine/v3.12/main/ > /etc/apk/r
   && apk del curl \
   && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn  \
   && mkdir -p ${MAVEN_CONFIG} \
-  && chown -R jenkins:jenkins ${MAVEN_CONFIG}
+  && chown -R jenkins:jenkins ${MAVEN_CONFIG} \
+  && touch /var/run/docker.sock \
+  && chown root:docker /var/run/docker.sock
+#ensures that /var/run/docker.sock exists
+#changes the ownership of /var/run/docker.sock
 
 USER ${user}
 ENV AGENT_WORKDIR=${AGENT_WORKDIR} \
